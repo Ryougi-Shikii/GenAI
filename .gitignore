@@ -1,0 +1,25 @@
+# Security & Credentials
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python compiled bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE & Editor configuration files
+.vscode/
+.idea/
