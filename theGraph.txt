@@ -1,0 +1,106 @@
+langchain
+│
+├── agents
+│   ├── create_agent
+│   ├── factory
+│   ├── middleware
+│   └── structured_output
+│
+├── chat_models
+│   ├── base
+│   └── init_chat_model
+│
+├── tools
+│   ├── BaseTool
+│   ├── InjectedState
+│   ├── InjectedStore
+│   ├── InjectedToolArg
+│   ├── InjectedToolCallId
+│   ├── ToolException
+│   ├── ToolRuntime
+│   ├── tool
+│   └── ToolNode
+│
+├── messages
+│   ├── AIMessage
+│   ├── HumanMessage
+│   ├── SystemMessage
+│   ├── ToolMessage
+│   ├── BaseMessage
+│   ├── AnyMessage
+│   ├── RemoveMessage
+│   └── trim_messages
+│
+├── prompts
+│   ├── BasePromptTemplate
+│   ├── ChatPromptTemplate
+│   ├── PromptTemplate
+│   └── MessagesPlaceholder
+│
+├── embeddings
+│   └── init_embeddings
+│
+├── vectorstores
+│   ├── InMemoryVectorStore
+│   └── VectorStore
+│
+├── document_loaders
+│   └── ...
+│
+├── text_splitters
+│   ├── RecursiveCharacterTextSplitter
+│   ├── CharacterTextSplitter
+│   ├── TokenTextSplitter
+│   └── ...
+│
+├── runnables
+│   ├── Runnable
+│   ├── RunnableLambda
+│   ├── RunnablePassthrough
+│   ├── RunnableParallel
+│   ├── RunnableSequence
+│   └── RunnableBranch
+│
+├── output_parsers
+│   ├── BaseOutputParser
+│   ├── BaseTransformOutputParser
+│   ├── StrOutputParser
+│   ├── JsonOutputParser
+│   ├── PydanticOutputParser
+│   └── ...
+│
+└── ... 
+
+Langchain:
+    agents       → autonomous/tool-using workflows
+    chat_models  → LLM/chat-model abstraction
+    tools        → functions the model can call
+    messages     → representation of conversation
+    prompts      → construction of model input
+    embeddings   → text → vectors
+    vectorstores → store/search vectors
+    loaders      → load external data
+    splitters    → divide documents into chunks
+    runnables    → composable execution abstraction
+    parsers      → model output → structured Python data
+
+
+
+                 langchain
+                     │
+       ┌─────────────┼─────────────┐
+       ▼             ▼             ▼
+    agents      chat_models      tools
+       │             │             │
+ create_agent  init_chat_model    @tool
+       │             │             │
+       ▼             ▼             ▼
+     Agent        Model          BaseTool
+       │             │             │
+       └─────────────┼─────────────┘
+                     ▼
+              Runnable interface
+                     │
+             ┌───────┼────────┐
+             ▼       ▼        ▼
+          invoke   stream    batch
