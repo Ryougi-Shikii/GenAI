@@ -12,6 +12,7 @@ __pycache__/
 .coverage
 
 # cache
+bm25_cache.pkl
 hf_models_cache/
 chroma_db/
-oc_registry.json
+doc_registry.json
