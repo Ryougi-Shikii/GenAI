@@ -1,13 +1,8 @@
 # Security & Credentials
 .env
-.env.*
-!.env.example
 
 # Python virtual environments
 .venv/
-venv/
-env/
-ENV/
 
 # Python compiled bytecode & cache
 __pycache__/
@@ -16,10 +11,7 @@ __pycache__/
 .pytest_cache/
 .coverage
 
-# Operating system files
-.DS_Store
-Thumbs.db
-
-# IDE & Editor configuration files
-.vscode/
-.idea/
+# cache
+.hf_models_cache/
+.chroma_db/
+.doc_registry.json
