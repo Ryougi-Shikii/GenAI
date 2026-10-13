@@ -12,6 +12,6 @@ __pycache__/
 .coverage
 
 # cache
-.hf_models_cache/
-.chroma_db/
-.doc_registry.json
+hf_models_cache/
+chroma_db/
+oc_registry.json
