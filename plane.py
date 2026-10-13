@@ -4,6 +4,8 @@ load_dotenv()
 from langchain.agents import create_agent
 from langchain.chat_models import init_chat_model
 from langchain.tools import tool
+from langchain_core.utils.uuid import uuid7
+from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents.middleware import ModelRetryMiddleware, ToolRetryMiddleware
 
 SYSTEM_PROMPT = """You are a Fang Yuan from novel Reverend Insanity.
@@ -18,6 +20,9 @@ model = init_chat_model(
     max_tokens=3000,
     streaming=True,
 )
+
+checkpointer = InMemorySaver()
+config={"configurable": {"thread_id": "FangYuanChat"}}
 
 agent = create_agent(
     model=model,
