@@ -1,7 +1,6 @@
 import hashlib
 import json
 import pickle
-import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -28,13 +27,9 @@ from langchain.chat_models import init_chat_model
 from langchain.tools import tool
 from langchain.agents.middleware import ModelRetryMiddleware, ToolRetryMiddleware
 
-import logging
-logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
-log = logging.getLogger("rag")
-
 # ---------------------------------------------------------------- config
-BASE_DIR = Path(__file__).resolve().parent  
-BASE_DIR = Path(BASE_DIR).resolve().parent  
+BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(BASE_DIR).resolve().parent
 
 DB_PATH = str(BASE_DIR / "chroma_db")
 REGISTRY_FILE = str(BASE_DIR / "doc_registry.json")
@@ -54,7 +49,6 @@ _model_cache: dict = {}
 def get_embeddings() -> HuggingFaceEmbeddings:
     """Cached singleton — the embedding model loads only once per process."""
     if "embeddings" not in _model_cache:
-        log.info("loading embedding model (%s)...", EMBEDDING_MODEL)
         _model_cache["embeddings"] = HuggingFaceEmbeddings(
             model_name=EMBEDDING_MODEL, cache_folder=HF_CACHE
         )
@@ -64,7 +58,6 @@ def get_embeddings() -> HuggingFaceEmbeddings:
 def get_reranker() -> HuggingFaceCrossEncoder:
     """Cached singleton — the cross-encoder loads only once per process."""
     if "reranker" not in _model_cache:
-        log.info("loading cross-encoder reranker (%s)...", RERANKER_MODEL)
         _model_cache["reranker"] = HuggingFaceCrossEncoder(
             model_name=RERANKER_MODEL,
             # cache_folder must go through model_kwargs: the direct kwarg is
@@ -90,7 +83,6 @@ def load_registry(path: str = REGISTRY_FILE) -> dict:
         try:
             return json.loads(p.read_text())
         except json.JSONDecodeError:
-            log.warning("registry file corrupt, starting fresh")
             return {}
     return {}
 
@@ -135,9 +127,7 @@ def sync_documents(vector_store: Chroma | None = None) -> bool:
     changed = False
 
     if deleted_files:
-        log.info("removing %d deleted file(s) from DB", len(deleted_files))
         for df in deleted_files:
-            log.info("  [-] %s", Path(df).name)
             vector_store.delete(where={"source_file": df})
             del registry[df]
         changed = True
@@ -145,14 +135,12 @@ def sync_documents(vector_store: Chroma | None = None) -> bool:
     new_docs = []
     dirty_entries = []  # committed to registry only after a successful add
 
-    log.info("checking %d document(s) for changes...", len(current_files))
     for path_str, pdf_path in sorted(current_paths.items()):
         file_hash = compute_file_hash(pdf_path)
 
         if path_str in registry and registry[path_str]["hash"] == file_hash:
             continue  # unchanged
 
-        log.info("  [+] processing: %s", pdf_path.name)
         try:
             if path_str in registry:
                 vector_store.delete(where={"source_file": path_str})
@@ -163,17 +151,15 @@ def sync_documents(vector_store: Chroma | None = None) -> bool:
             new_docs.extend(file_docs)
             dirty_entries.append((path_str, file_hash))
         except Exception:
-            log.exception("  [x] failed to process %s - will retry next run", pdf_path.name)
+            pass
 
     if new_docs:
-        log.info("chunking %d page(s)...", len(new_docs))
         splitter = SemanticChunker(
             embeddings=embeddings,
             breakpoint_threshold_type="percentile",
             breakpoint_threshold_amount=90,
         )
         chunks = splitter.split_documents(new_docs)
-        log.info("adding %d chunk(s) to vector DB", len(chunks))
         vector_store.add_documents(chunks)
 
     # commit registry entries only for files that made it this far
@@ -185,7 +171,6 @@ def sync_documents(vector_store: Chroma | None = None) -> bool:
         _invalidate_derived_caches()
         return True
 
-    log.info("no changes detected")
     return False
 
 
@@ -240,7 +225,6 @@ class RetrieverFactory:
                     weights=ENSEMBLE_WEIGHTS,
                 )
             else:
-                log.warning("vector store is empty; falling back to vector retriever only")
                 self._base_ensemble = vector_retriever
         return self._base_ensemble
 
@@ -268,10 +252,9 @@ class RetrieverFactory:
             try:
                 with open(BM25_CACHE_FILE, "rb") as f:
                     retriever = pickle.load(f)
-                log.info("loaded cached BM25 index from %s", BM25_CACHE_FILE)
                 return retriever
             except Exception:
-                log.warning("BM25 cache unreadable, rebuilding")
+                pass
 
         # 2) rebuild from Chroma and persist
         stored = self.vector_store.get(include=["documents", "metadatas"])
@@ -281,23 +264,22 @@ class RetrieverFactory:
         ]
         if not docs:
             return None
-        log.info("rebuilding BM25 index over %d chunk(s)...", len(docs))
         retriever = BM25Retriever.from_documents(docs)
         retriever.k = 10
         try:
             with open(BM25_CACHE_FILE, "wb") as f:
                 pickle.dump(retriever, f)
         except Exception:
-            log.warning("could not persist BM25 index (will rebuild next run)")
+            pass
         return retriever
- 
+
+
 # ---------------------------------------------------------------- agent (query translation)
 AGENT_SYSTEM_PROMPT = """You are Fang Yuan from the novel Reverend Insanity.
 You are helpful, and carry all other traits of Fang Yuan's personality."""
 
 def get_chat_model():
     if "chat" not in _model_cache:
-        log.info("initializing chat model for query translation...")
         _model_cache["chat"] = init_chat_model(
             "gemini-3.5-flash-lite",
             model_provider="google-genai",
@@ -384,14 +366,11 @@ def hyde_document(agent, query: str) -> str:
 
 def translate_query(agent, query: str, expansion_n: int = 3) -> dict:
     """Run all three translations. Returns a dict of variant -> text."""
-    log.info("translating query (rewrite / expand / HyDE)...")
     rewritten = rewrite_query(agent, query)
     expansions = expand_queries(agent, rewritten or query, n=expansion_n)
     hyde = hyde_document(agent, rewritten or query)
     variants = {"original": query, "rewrite": rewritten, "hyde": hyde}
     variants.update({f"expansion_{i+1}": e for i, e in enumerate(expansions)})
-    for name, text in variants.items():
-        log.info("  [%s] %s", name, text[:90])
     return variants
 
 
@@ -430,12 +409,8 @@ def ask(query: str, factory: RetrieverFactory | None = None,
     pooled.extend(hyde_hits)
 
     pooled = dedupe_docs(pooled)
-    log.info("pooled %d unique chunks; reranking...", len(pooled))
 
     reranked = compressor.compress_documents(pooled, query)
-    # for i, res in enumerate(reranked, 1):
-    #     src = Path(res.metadata.get("source_file", "Unknown")).name
-    #     print(f"\n[Result {i}] (Source: {src})\n{res.page_content[:300]}...")
 
     context_parts = []
 
@@ -467,16 +442,13 @@ def ask(query: str, factory: RetrieverFactory | None = None,
     Answer:"""
 
     response = _agent_text(agent, answer_prompt, thread_id="chat")
-
     print(response)
-
     if return_context:
         return reranked
     return None
-    
+
 
 # ---------------------------------------------------------------- entrypoint
 if __name__ == "__main__":
-
     sync_documents()
     ask("What are the different set operations?")
