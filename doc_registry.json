@@ -1,38 +1,50 @@
 {
     "D:\\Tamaki\\GenAI\\document\\Dictionaries in Python.pdf": {
-        "hash": "693da3b369c8d54ecbc07a1e0340ada940c3624002e4e5313765c73d7129ac53"
+        "hash": "693da3b369c8d54ecbc07a1e0340ada940c3624002e4e5313765c73d7129ac53",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Nested Loops in Python.pdf": {
-        "hash": "5363a966f359be212f07166b3de44305a6010d16f050fbea1a85d3cbf9f83b36"
+        "hash": "5363a966f359be212f07166b3de44305a6010d16f050fbea1a85d3cbf9f83b36",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Python Break.pdf": {
-        "hash": "3d56b95a2cd0360c6df57bbc4db9995ad671388b5c5447c02c4eb43962fb4d2c"
+        "hash": "3d56b95a2cd0360c6df57bbc4db9995ad671388b5c5447c02c4eb43962fb4d2c",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Python Casting.pdf": {
-        "hash": "52498a5ec6cbcda54cd6052194e09b12eb4e3d61a7463305a9e3a19b1eb0b1df"
+        "hash": "52498a5ec6cbcda54cd6052194e09b12eb4e3d61a7463305a9e3a19b1eb0b1df",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Python Control Flow Statements and Loops.pdf": {
-        "hash": "8450519b2894b83776401162c606946c6e9e9621355edfd183e688bb3132569e"
+        "hash": "8450519b2894b83776401162c606946c6e9e9621355edfd183e688bb3132569e",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Python Data Types.pdf": {
-        "hash": "b679a455b6917df1f2914577af756c40db53c138d65643524a0127dc92b8d849"
+        "hash": "b679a455b6917df1f2914577af756c40db53c138d65643524a0127dc92b8d849",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Python Lists.pdf": {
-        "hash": "147c3aff3e86126f510a22c83ff6e8d0787fa1e425a47f06c226fc04b014d580"
+        "hash": "147c3aff3e86126f510a22c83ff6e8d0787fa1e425a47f06c226fc04b014d580",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Python Operators.pdf": {
-        "hash": "534300632d6909c84cf2d9c2ebb833a5d940bc71ff5633d3609a7fb662061005"
+        "hash": "534300632d6909c84cf2d9c2ebb833a5d940bc71ff5633d3609a7fb662061005",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Python for loop.pdf": {
-        "hash": "2b161a244d7105440ed9df1c6d4170a40174385c5f414bd9cc4450858ebc7db3"
+        "hash": "2b161a244d7105440ed9df1c6d4170a40174385c5f414bd9cc4450858ebc7db3",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Python while loop.pdf": {
-        "hash": "79c8b00a3eb6c8bd14ea5b9de7c2df7bda4f421736f0e7f26f0d057a2cbef420"
+        "hash": "79c8b00a3eb6c8bd14ea5b9de7c2df7bda4f421736f0e7f26f0d057a2cbef420",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Sets in Python.pdf": {
-        "hash": "1db2e8e95579e72449a8c7b55222dee240c4537bfddcab5058bf51cb4a645401"
+        "hash": "1db2e8e95579e72449a8c7b55222dee240c4537bfddcab5058bf51cb4a645401",
+        "schema": "v2-multiformat"
     },
     "D:\\Tamaki\\GenAI\\document\\Tuples in Python.pdf": {
-        "hash": "089f926ac570de476e82894f074bf9ce4cf03828df6bfc9312a002a5a8f5ba9c"
+        "hash": "089f926ac570de476e82894f074bf9ce4cf03828df6bfc9312a002a5a8f5ba9c",
+        "schema": "v2-multiformat"
     }
 }
