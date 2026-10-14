@@ -16,3 +16,4 @@ bm25_cache.pkl
 hf_models_cache/
 chroma_db/
 doc_registry.json
+context_salt.txt
