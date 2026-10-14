@@ -81,10 +81,11 @@ def sync_documents(vector_store: Chroma | None = None) -> bool:
 
     Crash-safe: the registry is committed only after a successful add; a failed
     file is retried next run.
+
+    Fast path: the file hashes are compared BEFORE the vector store (and
+    therefore the embedding model) is opened. On a no-op run this returns
+    without paying the ~20s embedding model load.
     """
-    if vector_store is None:
-        vector_store = get_vector_store()
-    embeddings = vector_store._embedding_function
     registry = _load_registry()
 
     current_files = [
@@ -94,6 +95,31 @@ def sync_documents(vector_store: Chroma | None = None) -> bool:
     ]
     current_paths = {str(p): p for p in current_files}
     deleted_files = set(registry.keys()) - set(current_paths)
+
+    # ---- decide whether any real work is needed (no model load yet) ----
+    needs_ingest = False
+    for path_str, pdf_path in current_paths.items():
+        try:
+            file_hash = _compute_file_hash(pdf_path)
+        except OSError:
+            logger.exception("[sync] cannot hash %s", pdf_path)
+            needs_ingest = True  # be safe, let the ingest path log it
+            continue
+        entry = registry.get(path_str)
+        if (entry is None
+                or entry.get("hash") != file_hash
+                or entry.get("schema") != CHUNK_SCHEMA):
+            needs_ingest = True
+            break
+
+    if not deleted_files and not needs_ingest:
+        logger.info("Nothing to sync; skipping vector store open")
+        return False
+
+    # ---- real work ahead: open the store (loads embedding model once) ----
+    if vector_store is None:
+        vector_store = get_vector_store()
+    embeddings = vector_store._embedding_function
 
     changed = False
     if deleted_files:

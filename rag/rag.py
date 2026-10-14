@@ -11,11 +11,11 @@ from langchain_classic.retrievers import EnsembleRetriever
 from langchain_classic.retrievers.document_compressors import CrossEncoderReranker
 from langchain_community.retrievers import BM25Retriever
 from langchain_core.documents import Document
-from langchain_core.utils.uuid import uuid7
 
 from .config import (
-    BM25_CACHE_FILE, ENSEMBLE_WEIGHTS, RERANK_TOP_N, SCORE_THRESHOLD,
-    get_agent, get_reranker, get_vector_store, salt,
+    BM25_CACHE_FILE, ENSEMBLE_WEIGHTS, MAX_RERANK_INPUT,
+    RERANK_TOP_N, get_agent, get_reranker, get_translation_agent,
+    get_vector_store, salt, ENSEMBLE_K, HYDE_K,
 )
 
 logger = logging.getLogger(__name__)
@@ -41,8 +41,8 @@ class RetrieverFactory:
 
     def get_vector_retriever(self):
         return self.vector_store.as_retriever(
-            search_type="similarity_score_threshold",
-            search_kwargs={"k": 10, "score_threshold": SCORE_THRESHOLD},
+            search_type="similarity",
+            search_kwargs={"k": ENSEMBLE_K},
         )
 
     def get_base_ensemble(self):
@@ -81,7 +81,7 @@ class RetrieverFactory:
         if not docs:
             return None
         retriever = BM25Retriever.from_documents(docs)
-        retriever.k = 10
+        retriever.k = ENSEMBLE_K
         try:
             with open(BM25_CACHE_FILE, "wb") as f:
                 pickle.dump(retriever, f)
@@ -95,12 +95,89 @@ def clear_retriever_cache() -> None:
 
 
 # ================================================================ agent turn
-async def _agent_text(agent, prompt: str, thread_id: str) -> str:
+def _reasoning_text(block: dict) -> str:
+    """Extract the reasoning payload from a reasoning-type content block.
+
+    Different providers name the field differently (`reasoning`, `summary`,
+    `text`), and `summary` can be a list of sub-blocks. Be liberal.
+    """
+    for key in ("reasoning", "text", "content", "summary"):
+        value = block.get(key)
+        if isinstance(value, str) and value:
+            return value
+        if isinstance(value, list):
+            parts: list[str] = []
+            for item in value:
+                if isinstance(item, str):
+                    parts.append(item)
+                elif isinstance(item, dict):
+                    t = item.get("text") or item.get("content")
+                    if isinstance(t, str):
+                        parts.append(t)
+            if parts:
+                return "".join(parts)
+    return ""
+
+
+def _extract_blocks(msg) -> tuple[str, str]:
+    """Return (reasoning, text) from an assistant message.
+
+    Reasoning models (gpt-oss-120b, deepseek-r1, ...) prepend a
+    {"type": "reasoning", ...} block to `content_blocks`; the actual answer
+    is a later {"type": "text", ...} block. Non-reasoning models only emit
+    the text block.
+    """
+    reasoning_chunks: list[str] = []
+    text = ""
+
+    blocks = getattr(msg, "content_blocks", None) or []
+    for block in blocks:
+        if not isinstance(block, dict):
+            continue
+        btype = block.get("type")
+        if btype == "reasoning":
+            chunk = _reasoning_text(block)
+            if chunk:
+                reasoning_chunks.append(chunk)
+        elif btype == "text" and not text:
+            text = block.get("text", "")
+
+    # Fallbacks for providers that don't use content_blocks.
+    if not text:
+        content = getattr(msg, "content", "")
+        if isinstance(content, str):
+            text = content
+        elif isinstance(content, list):
+            text = "".join(
+                b.get("text", "")
+                for b in content
+                if isinstance(b, dict) and b.get("type") == "text"
+            )
+
+    return "\n\n".join(reasoning_chunks).strip(), text
+
+
+async def _agent_text(
+        agent,
+        prompt: str,
+        thread_id: str | None = None,
+        show_reasoning: bool = True,
+    ) -> str:
+    """Run one turn and return the text. Prints reasoning blocks if present."""
+    config = {"configurable": {"thread_id": thread_id}} if thread_id else None
     out = await agent.ainvoke(
         {"messages": [{"role": "user", "content": prompt}]},
-        config={"configurable": {"thread_id": thread_id}},
+        config=config,
     )
-    return out["messages"][-1].content_blocks[0]["text"]
+
+    reasoning, text = _extract_blocks(out["messages"][-1])
+
+    if show_reasoning and reasoning:
+        print("\n--- reasoning ---")
+        print(reasoning)
+        print("--- /reasoning ---")
+
+    return text
 
 
 # ================================================================ query translation
@@ -112,7 +189,7 @@ async def _rewrite_query(agent, query: str) -> str:
         "if needed. Output ONLY the rewritten query, nothing else.\n\n"
         f"User question: {query}"
     )
-    return (await _agent_text(agent, prompt, thread_id=f"rewrite-{uuid7()}")).strip()
+    return (await _agent_text(agent, prompt)).strip()
 
 
 async def _expand_queries(agent, query: str, n: int = 3) -> list[str]:
@@ -124,7 +201,7 @@ async def _expand_queries(agent, query: str, n: int = 3) -> list[str]:
         "Output ONLY the numbered queries, nothing else.\n\n"
         f"Question: {query}"
     )
-    raw = await _agent_text(agent, prompt, thread_id=f"expand-{uuid7()}")
+    raw = await _agent_text(agent, prompt)
     out = []
     for line in raw.splitlines():
         line = line.strip()
@@ -146,7 +223,7 @@ async def _hyde_document(agent, query: str) -> str:
         "Output ONLY the paragraph.\n\n"
         f"Question: {query}"
     )
-    return (await _agent_text(agent, prompt, thread_id=f"hyde-{uuid7()}")).strip()
+    return (await _agent_text(agent, prompt)).strip()
 
 
 async def _translate_query(agent, query: str, expansion_n: int = 3) -> dict:
@@ -174,19 +251,63 @@ def _dedupe_docs(docs: list[Document]) -> list[Document]:
     return out
 
 
+# ================================================================ routing
+async def classify(query: str) -> str:
+    """Return 'retrieve' or 'chat'. One cheap LLM call, no memory."""
+    agent = get_translation_agent()
+    prompt = (
+        "You are a router inside a document Q&A assistant. Decide whether the "
+        "user's latest message needs a lookup in a technical document store, or "
+        "whether it is conversational (greeting, smalltalk, meta-question, or a "
+        "follow-up answerable from prior turns alone).\n\n"
+        "Reply with exactly one word: retrieve or chat.\n\n"
+        f"Message: {query}"
+    )
+    raw = await _agent_text(agent, prompt, show_reasoning=False)
+    decision = raw.strip().lower()
+    return "retrieve" if decision.startswith("retrieve") else "chat"
+
+
+# ================================================================ chat
+async def chat(query: str, session_id: str = "test") -> str:
+    """Conversational reply. No retrieval, but keeps session memory."""
+    agent = get_agent()
+    try:
+        response = await _agent_text(
+            agent, query, thread_id=f"chat-{session_id}",
+        )
+    except Exception:
+        logger.exception("[chat] chat turn failed")
+        response = "I couldn't reach the language model."
+
+    print("\n=== Answer ===")
+    print(response)
+    print()
+    return response
+
+
+# ================================================================ ask
 async def ask(
-    query: str,
-    factory: RetrieverFactory | None = None,
-    expansion_n: int = 3,
-    return_context: bool = False,
-    session_id: str = "test",
-):
-    """translate -> retrieve per variant -> pool -> rerank -> answer."""
+        query: str,
+        factory: RetrieverFactory | None = None,
+        expansion_n: int = 3,
+        return_context: bool = False,
+        session_id: str = "test",
+    ):
+    """translate -> retrieve per variant -> pool -> rerank -> answer.
+
+    Query translation (rewrite / expand / HyDE) is done with the dedicated
+    translation model (Qwen); the final answer is produced by the chat chain.
+    """
     if factory is None:
         factory = RetrieverFactory.cached()
-    agent = get_agent()
-    variants = await _translate_query(agent, query, expansion_n=expansion_n)
 
+    chat_agent = get_agent()
+    translation_agent = get_translation_agent()
+
+    variants = await _translate_query(
+        translation_agent, query, expansion_n=expansion_n,
+    )
     base = factory.get_base_ensemble()
     compressor = factory.get_compressor()
 
@@ -196,8 +317,12 @@ async def ask(
             continue
         pooled.extend(await base.ainvoke(text))
 
-    pooled.extend(await factory.vector_store.asimilarity_search(variants["hyde"], k=10))
+    pooled.extend(await factory.vector_store.asimilarity_search(variants["hyde"], k=HYDE_K))
+    
     pooled = _dedupe_docs(pooled)
+    if len(pooled) > MAX_RERANK_INPUT:
+        pooled = pooled[:MAX_RERANK_INPUT]
+        
     logger.info("Pooled %d unique document(s) across query variants", len(pooled))
 
     try:
@@ -207,6 +332,7 @@ async def ask(
             "[ask] reranker failed; falling back to pool top-%d", RERANK_TOP_N
         )
         reranked = pooled[:RERANK_TOP_N]
+        
     logger.info("Reranked down to %d document(s)", len(reranked))
 
     context_parts = []
@@ -219,7 +345,8 @@ async def ask(
         Answer the user's question using the retrieved context below.
 
         Rules:
-            Use the context as the primary source of truth.
+            Use the context below when it is relevant. 
+            If the user's question cannot be answered from it, say so clearly rather than guessing.
             Do not invent facts that are not supported by the context.
             If the context does not contain enough information, explicitly say so.
             Give a clear, well-structured answer.
@@ -235,12 +362,15 @@ async def ask(
 
         Answer:"""
 
+    logger.info("Answering %r via retrieval", query)
     try:
-        response = await _agent_text(agent, answer_prompt, thread_id=f"chat-{session_id}")
+        response = await _agent_text(
+            chat_agent, answer_prompt, thread_id=f"chat-{session_id}",
+        )
     except Exception:
-        logger.exception("[ask] all LLMs failed; returning fallback message")
+        logger.exception("[ask] chat turn failed")
         response = "I couldn't reach the language model."
-
-    logger.info("Answer produced for session %s", session_id)
+    print("\n=== Answer ===")
     print(response)
+    print()
     return reranked if return_context else response
