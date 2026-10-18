@@ -1,0 +1,39 @@
+[
+  {
+    "id": "L1",
+    "path": "Day 6\\images\\L1.png",
+    "prompt": "Miku, turquoise twin-tail hair, teal eyes, silver-blue futuristic outfit with holographic vest, headset microphone, digital music note pendant, stands on a neon-lit stage with pastel pink and blue lights, she winks playfully at Teto, her hand slightly raised as if teasing, medium shot capturing her upper body and expressive face. 16:9 composition, no text, no watermark",
+    "ok": true
+  },
+  {
+    "id": "L2",
+    "path": "Day 6\\images\\L2.png",
+    "prompt": "Teto, pink bob hair, magenta eyes, pastel pink and white dress with winged accessory, star-shaped hairpin, leans against a glowing speaker console, she smirks back at Miku with a playful glint, arms crossed lightly, medium shot framing her torso and face. 16:9 composition, no text, no watermark",
+    "ok": true
+  },
+  {
+    "id": "L3",
+    "path": "Day 6\\images\\L3.png",
+    "prompt": "Miku, turquoise twin-tail hair, teal eyes, silver-blue futuristic outfit with holographic vest, headset microphone, digital music note pendant, leans closer to Teto on the stage, eyes warm, slight smile, hand gently touching the edge of Teto's shoulder, medium shot focusing on both characters' upper bodies. 16:9 composition, no text, no watermark",
+    "ok": true
+  },
+  {
+    "id": "L4",
+    "path": "Day 6\\images\\L4.png",
+    "prompt": "Teto, pink bob hair, magenta eyes, pastel pink and white dress with winged accessory, star-shaped hairpin, cheeks flushed with a soft pink blush, she looks up at Miku, hands lightly on hips, medium shot capturing her flirty expression. 16:9 composition, no text, no watermark",
+    "ok": true
+  },
+  {
+    "id": "L5",
+    "path": null,
+    "prompt": "Miku, turquoise twin-tail hair, teal eyes, silver-blue futuristic outfit with holographic vest, headset microphone, digital music note pendant, extends her hand toward Teto, eyes bright with hopeful excitement, close-up on her face and outstretched hand, soft backlight highlighting her hair. 16:9 composition, no text, no watermark",
+    "ok": false,
+    "error": "CF 400: {\"errors\":[{\"message\":\"AiError: AiError: Input prompt contains NSFW content. (c64535e7-8fbe-4f11-b90f-73d98b397fc8)\",\"code\":8007}],\"success\":false,\"result\":{},\"messages\":[]}"
+  },
+  {
+    "id": "L6",
+    "path": "Day 6\\images\\L6.png",
+    "prompt": "Teto, pink bob hair, magenta eyes, pastel pink and white dress with winged accessory, star-shaped hairpin, reaches out and takes Miku's hand, her expression ecstatic, eyes shining, close-up on intertwined hands and smiling faces, ambient stage lights create a warm glow. 16:9 composition, no text, no watermark",
+    "ok": true
+  }
+]

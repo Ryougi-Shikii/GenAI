@@ -24,6 +24,27 @@ model = init_chat_model(
 checkpointer = InMemorySaver()
 config={"configurable": {"thread_id": "FangYuanChat"}}
 
+def _build_chat_model():
+    primary = init_chat_model(
+        "openai/gpt-oss-120b",
+        model_provider="groq",
+        temperature=0.9, timeout=600, max_tokens=3000,
+    )
+    second_code = init_chat_model(
+        "qwen/qwen3.8-27b",
+        model_provider="groq",
+        temperature=0.9, timeout=600, max_tokens=3000,
+    )
+    third_fallback = init_chat_model(
+        "gemini-3.5-flash-lite",
+        model_provider="google-genai",
+        temperature=0.9, timeout=600, max_tokens=3000,
+    )
+    return primary.with_fallbacks(
+        [second_code, third_fallback],
+        exceptions_to_handle=(Exception,),
+    )
+
 agent = create_agent(
     model=model,
     tools=[Add, Sub, Div],

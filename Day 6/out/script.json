@@ -1,0 +1,88 @@
+{
+  "lines": [
+    {
+      "id": "L1",
+      "speaker": "Hatsune Miku",
+      "text": "Hey Teto, that melody you sang just now? It’s stuck in my head.",
+      "emotion": "flirty",
+      "intensity": 0.7,
+      "rate": 1.1,
+      "pauses": [
+        0.3
+      ],
+      "emphasis": [
+        "melody"
+      ],
+      "visual_cue": "Miku winks"
+    },
+    {
+      "id": "L2",
+      "speaker": "Teto",
+      "text": "Oh? I thought it was just a warm breeze.",
+      "emotion": "playful",
+      "intensity": 0.6,
+      "rate": 1.0,
+      "pauses": [],
+      "emphasis": [
+        "warm"
+      ],
+      "visual_cue": "Teto smiles shyly"
+    },
+    {
+      "id": "L3",
+      "speaker": "Hatsune Miku",
+      "text": "Maybe it was, but I think you were humming just for me.",
+      "emotion": "warm",
+      "intensity": 0.75,
+      "rate": 1.0,
+      "pauses": [
+        0.2
+      ],
+      "emphasis": [
+        "me"
+      ],
+      "visual_cue": "Miku leans closer"
+    },
+    {
+      "id": "L4",
+      "speaker": "Teto",
+      "text": "Then let’s make a duet, just the two of us.",
+      "emotion": "excited",
+      "intensity": 0.8,
+      "rate": 1.15,
+      "pauses": [],
+      "emphasis": [
+        "duet"
+      ],
+      "visual_cue": "Teto extends hand"
+    },
+    {
+      "id": "L5",
+      "speaker": "Hatsune Miku",
+      "text": "I’d love that—your voice blends perfectly with my synth.",
+      "emotion": "amused",
+      "intensity": 0.85,
+      "rate": 1.1,
+      "pauses": [
+        0.3
+      ],
+      "emphasis": [
+        "perfectly"
+      ],
+      "visual_cue": "Miku giggles"
+    },
+    {
+      "id": "L6",
+      "speaker": "Teto",
+      "text": "And maybe after the song, we can share a sunrise together?",
+      "emotion": "hopeful",
+      "intensity": 0.9,
+      "rate": 1.0,
+      "pauses": [],
+      "emphasis": [
+        "sunrise"
+      ],
+      "visual_cue": "Teto looks hopeful"
+    }
+  ]
+}
