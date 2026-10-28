@@ -155,9 +155,9 @@ IMAGE_DIR  = Path("Day 6/images")
 
 CF_URL = (
     f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT}/ai/run/"
-    "@cf/black-forest-labs/flux-2-klein-4b"
+    "@cf/black-forest-labs/flux-1-schnell"
 )
-    # "@cf/black-forest-labs/flux-1-schnell"
+    # "@cf/black-forest-labs/flux-2-klein-4b"
 
 @tool
 def generate_image(prompt: str, filename: str) -> str:
@@ -165,7 +165,7 @@ def generate_image(prompt: str, filename: str) -> str:
     r = requests.post(
         CF_URL,
         headers={"Authorization": f"Bearer {CF_TOKEN}"},
-        json={"prompt": prompt, "steps": 8},
+        json={"prompt": prompt, "steps": 4},
         timeout=90,
     )
 

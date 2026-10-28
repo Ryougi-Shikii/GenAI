@@ -2,38 +2,37 @@
   {
     "id": "L1",
     "path": "Day 6\\images\\L1.png",
-    "prompt": "Miku, turquoise twin-tail hair, teal eyes, silver-blue futuristic outfit with holographic vest, headset microphone, digital music note pendant, stands on a neon-lit stage with pastel pink and blue lights, she winks playfully at Teto, her hand slightly raised as if teasing, medium shot capturing her upper body and expressive face. 16:9 composition, no text, no watermark",
+    "prompt": "Hatsune Miku with aqua twin-tail hair, teal-green eyes, black futuristic outfit with teal accents, and a glowing digital microphone stands in a neon-lit karaoke booth, winking playfully at Teto. The medium shot captures soft pastel blue stage lighting reflecting off sleek metal panels. Teto with short emerald green hair, amber eyes, pastel pink jacket with a small star hairpin, and a silver headset watches amusedly. 16:9 composition, no text, no watermark",
     "ok": true
   },
   {
     "id": "L2",
     "path": "Day 6\\images\\L2.png",
-    "prompt": "Teto, pink bob hair, magenta eyes, pastel pink and white dress with winged accessory, star-shaped hairpin, leans against a glowing speaker console, she smirks back at Miku with a playful glint, arms crossed lightly, medium shot framing her torso and face. 16:9 composition, no text, no watermark",
+    "prompt": "Teto with short emerald green hair, amber eyes, pastel pink jacket with a small star hairpin, and a silver headset smirks while leaning against a glowing microphone stand. The medium shot shows the same neon karaoke setting, pastel pink and cyan lights casting a gentle glow. Hatsune Miku with aqua twin-tail hair, teal-green eyes, black futuristic outfit with teal accents, and a glowing digital microphone watches her, a playful spark in her expression. 16:9 composition, no text, no watermark",
     "ok": true
   },
   {
     "id": "L3",
     "path": "Day 6\\images\\L3.png",
-    "prompt": "Miku, turquoise twin-tail hair, teal eyes, silver-blue futuristic outfit with holographic vest, headset microphone, digital music note pendant, leans closer to Teto on the stage, eyes warm, slight smile, hand gently touching the edge of Teto's shoulder, medium shot focusing on both characters' upper bodies. 16:9 composition, no text, no watermark",
+    "prompt": "Hatsune Miku with aqua twin-tail hair, teal-green eyes, black futuristic outfit with teal accents, and a glowing digital microphone leans in close, eyes shining with flirtation. The medium shot frames her against the shimmering backdrop of neon panels, pastel violet light outlining her silhouette. Teto with short emerald green hair, amber eyes, pastel pink jacket with a small star hairpin, and a silver headset tilts her head, listening attentively. 16:9 composition, no text, no watermark",
     "ok": true
   },
   {
     "id": "L4",
     "path": "Day 6\\images\\L4.png",
-    "prompt": "Teto, pink bob hair, magenta eyes, pastel pink and white dress with winged accessory, star-shaped hairpin, cheeks flushed with a soft pink blush, she looks up at Miku, hands lightly on hips, medium shot capturing her flirty expression. 16:9 composition, no text, no watermark",
+    "prompt": "Teto with short emerald green hair, amber eyes, pastel pink jacket with a small star hairpin, and a silver headset raises an eyebrow, amused by Miku's request. The medium shot captures the warm glow of pink and teal spotlights that bathe the stage. Hatsune Miku with aqua twin-tail hair, teal-green eyes, black futuristic outfit with teal accents, and a glowing digital microphone smiles, her hand resting lightly on the mic stand. 16:9 composition, no text, no watermark",
     "ok": true
   },
   {
     "id": "L5",
-    "path": null,
-    "prompt": "Miku, turquoise twin-tail hair, teal eyes, silver-blue futuristic outfit with holographic vest, headset microphone, digital music note pendant, extends her hand toward Teto, eyes bright with hopeful excitement, close-up on her face and outstretched hand, soft backlight highlighting her hair. 16:9 composition, no text, no watermark",
-    "ok": false,
-    "error": "CF 400: {\"errors\":[{\"message\":\"AiError: AiError: Input prompt contains NSFW content. (c64535e7-8fbe-4f11-b90f-73d98b397fc8)\",\"code\":8007}],\"success\":false,\"result\":{},\"messages\":[]}"
+    "path": "Day 6\\images\\L5.png",
+    "prompt": "Hatsune Miku with aqua twin-tail hair, teal-green eyes, black futuristic outfit with teal accents, and a glowing digital microphone giggles in a tight close-up, her cheeks flushed with warmth. The lighting is a soft pastel pink wash that highlights the sparkle in her eyes. The background blurs into neon streaks, keeping focus on her expressive face. 16:9 composition, no text, no watermark",
+    "ok": true
   },
   {
     "id": "L6",
     "path": "Day 6\\images\\L6.png",
-    "prompt": "Teto, pink bob hair, magenta eyes, pastel pink and white dress with winged accessory, star-shaped hairpin, reaches out and takes Miku's hand, her expression ecstatic, eyes shining, close-up on intertwined hands and smiling faces, ambient stage lights create a warm glow. 16:9 composition, no text, no watermark",
+    "prompt": "Teto with short emerald green hair, amber eyes, pastel pink jacket with a small star hairpin, and a silver headset steps closer, hopeful eyes meeting Miku's. The medium shot shows the duo bathed in a dreamy cascade of cyan and magenta stage lights, creating a romantic ambience. Hatsune Miku with aqua twin-tail hair, teal-green eyes, black futuristic outfit with teal accents, and a glowing digital microphone watches, a soft smile forming. 16:9 composition, no text, no watermark",
     "ok": true
   }
 ]

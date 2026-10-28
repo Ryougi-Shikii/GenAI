@@ -1,0 +1,95 @@
+{
+  "lines": [
+    {
+      "id": "L1",
+      "speaker": "Miku",
+      "text": "Hey Teto, your voice is like a sunrise.",
+      "emotion": "warm",
+      "intensity": 0.6,
+      "rate": 1.0,
+      "pauses": [
+        0.3
+      ],
+      "emphasis": [
+        "sunrise"
+      ],
+      "visual_cue": "Miku smiles brightly"
+    },
+    {
+      "id": "L2",
+      "speaker": "Teto",
+      "text": "Oh? And yours must be the glittering night sky.",
+      "emotion": "amused",
+      "intensity": 0.6,
+      "rate": 1.0,
+      "pauses": [
+        0.2
+      ],
+      "emphasis": [
+        "glittering"
+      ],
+      "visual_cue": "Teto winks"
+    },
+    {
+      "id": "L3",
+      "speaker": "Miku",
+      "text": "Only if you promise to sing along with me.",
+      "emotion": "playful",
+      "intensity": 0.7,
+      "rate": 1.15,
+      "pauses": [
+        0.25,
+        0.15
+      ],
+      "emphasis": [
+        "sing"
+      ],
+      "visual_cue": "Miku leans closer"
+    },
+    {
+      "id": "L4",
+      "speaker": "Teto",
+      "text": "I could, but only if you let me steal a kiss.",
+      "emotion": "flirty",
+      "intensity": 0.8,
+      "rate": 1.15,
+      "pauses": [
+        0.2
+      ],
+      "emphasis": [
+        "kiss"
+      ],
+      "visual_cue": "Teto's eyes sparkle"
+    },
+    {
+      "id": "L5",
+      "speaker": "Miku",
+      "text": "Deal—just make sure you don't bite.",
+      "emotion": "teasing",
+      "intensity": 0.7,
+      "rate": 1.15,
+      "pauses": [
+        0.3
+      ],
+      "emphasis": [
+        "bite"
+      ],
+      "visual_cue": "Miku giggles"
+    },
+    {
+      "id": "L6",
+      "speaker": "Teto",
+      "text": "No promises, but I'll try to be gentle.",
+      "emotion": "warm",
+      "intensity": 0.6,
+      "rate": 0.95,
+      "pauses": [
+        0.2
+      ],
+      "emphasis": [
+        "gentle"
+      ],
+      "visual_cue": "Teto steps closer"
+    }
+  ]
+}
